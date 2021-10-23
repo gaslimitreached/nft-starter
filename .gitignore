@@ -1,3 +1,7 @@
+# solidity
+artifacts
+cache
+
 # cdk
 cdk.out
 build
