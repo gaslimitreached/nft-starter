@@ -13,7 +13,7 @@ describe("MyNFT", function () {
     const MyToken = await ethers.getContractFactory("MyToken");
     const payees = [owner.address];
     const shares = [100];
-    myToken = await MyToken.deploy(payees, shares);
+    myToken = await MyToken.deploy(payees, shares, "ipfs://hash");
     await myToken.deployed();
   });
 

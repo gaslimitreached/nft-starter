@@ -5,33 +5,41 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 
-contract MyToken is ERC721, ERC721URIStorage, ERC721Enumerable, PaymentSplitter, Pausable, Ownable {
+contract MyToken is ERC721, ERC721Enumerable, ERC721URIStorage, PaymentSplitter, Pausable, Ownable {
     using Counters for Counters.Counter;
     using SafeMath for uint256;
     uint256 maxPerTx = 1;
     uint256 maxSupply = 10_000;
+    uint256 private _price = 40_000_000_000_000_000;
     address private _owner;
+    string private _uri;
 
     Counters.Counter private _tokenIdCounter;
 
     constructor(
         address[] memory payees,
-        uint256[] memory shares_
+        uint256[] memory shares_,
+        string memory uri
     )
        ERC721("MyToken", "MTK")
        PaymentSplitter(payees, shares_) {
 	    _owner = msg.sender;
+        _uri = uri;
 	    _pause();
     }
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://dat.website/images";
+    function _baseURI() internal view override returns (string memory) {
+        return _uri;
+    }
+
+    function setBaseURI(string memory uri) public onlyOwner {
+        _uri = uri;
     }
 
     function pause() public onlyOwner {
@@ -50,8 +58,13 @@ contract MyToken is ERC721, ERC721URIStorage, ERC721Enumerable, PaymentSplitter,
     }
 
     // @dev surface cost to mint
-    function price() public pure returns (uint256) {
-        return 40_000_000_000_000_000; // 0.04 ETH
+    function price() public view returns (uint256) {
+        return _price;
+    }
+
+    // @dev change cost to mint protects against price movement
+    function setPrice(uint256 amount) public onlyOwner {
+        _price = amount;
     }
 
     // @dev website mint function
