@@ -1,9 +1,8 @@
-// nav
 import '../styles/globals.css';
-function SodaFountain({ Component, pageProps }) {
+function Dapp({ Component, pageProps }) {
   return (
     <Component {...pageProps} />
   )
 }
 
-export default SodaFountain;
+export default Dapp;
