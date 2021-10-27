@@ -3,7 +3,6 @@ import { collectionName } from '../config'
 
 const href=`https://twitter.com/${collectionName}`
 
-const href = twitter,
 const navigation = [
   {
     name: 'Twitter',
